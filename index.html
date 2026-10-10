@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Guard Your Lips Quiz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;600;700&display=swap">
+<style>
+/* Phone-first single column: header strip, question card, four stacked answer buttons. */
+:root{
+  --bg:#f5f2fa; --card:#ffffff; --line:#dcd5ea; --text:#1d1830; --muted:#625a78; --accent:#5b3fc4; --gold:#c98a00;
+  --a:#d4473d; --b:#2f6bd0; --c:#b8860b; --d:#23845a; --ok:#23845a; --bad:#c23a32;
+  --display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --body:"Figtree",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#15121f; --card:#1f1a2e; --line:#3a3350; --text:#f4f1fb; --muted:#b4abc9; --accent:#a58cff; --gold:#f2c14e;
+  --a:#d9554a; --b:#3d7be0; --c:#c9970f; --d:#2a9465; --ok:#4cc38a; --bad:#ff7a70; color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:17px;line-height:1.45;-webkit-tap-highlight-color:transparent}
+.wrap{max-width:640px;margin:0 auto;padding-inline:16px;padding-block:calc(16px + env(safe-area-inset-top,0px)) calc(24px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:18px;min-height:100vh;min-height:100dvh}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.brand{font-family:var(--display);font-weight:800;font-size:1.05rem}
+.brand small{display:block;font-family:var(--body);font-weight:600;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.pill{font-variant-numeric:tabular-nums;font-weight:700;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:5px 12px;font-size:.88rem;white-space:nowrap}
+h1,h2{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.12}
+h1{font-size:clamp(2rem,9vw,3rem);font-weight:800}
+h1 em{font-style:normal;color:var(--accent)}
+h2{font-size:clamp(1.3rem,5.5vw,1.8rem);font-weight:800}
+p{margin:0}
+.muted{color:var(--muted)}
+.rules{display:grid;gap:8px;padding:16px;border:1px solid var(--line);background:var(--card);border-radius:14px;margin:0;list-style:none}
+.rules li{display:flex;gap:10px}
+.rules b{font-variant-numeric:tabular-nums;min-width:2.6em}
+label{font-weight:700;font-size:.9rem}
+input{font:inherit;width:100%;padding:14px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--text)}
+button{font:inherit;font-weight:700;cursor:pointer;border:0;border-radius:12px;padding:16px 18px}
+.go{background:var(--accent);color:#fff;width:100%}
+.go:disabled{opacity:.45;cursor:not-allowed}
+button:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.bar{height:8px;border-radius:99px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--gold);transform-origin:left;transition:transform .1s linear}
+.meta{display:flex;justify-content:space-between;font-weight:700;font-variant-numeric:tabular-nums;font-size:.92rem;color:var(--muted)}
+.answers{display:grid;gap:8px}
+.opt{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;background:var(--card);border:1px solid var(--line);font-weight:600;transition:opacity .2s}
+.opt .sw{flex:none;width:36px;height:36px;border-radius:9px;display:grid;place-items:center}
+.opt .sw svg{width:20px;height:20px;fill:#fff}
+.opt:nth-child(1) .sw,.shape:nth-child(1){background:var(--a)}.opt:nth-child(2) .sw,.shape:nth-child(2){background:var(--b)}
+.opt:nth-child(3) .sw,.shape:nth-child(3){background:var(--c)}.opt:nth-child(4) .sw,.shape:nth-child(4){background:var(--d)}
+.pad{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:auto}
+.shape{display:grid;place-items:center;min-height:96px;border-radius:16px;transition:opacity .2s,transform .1s}
+.shape:active{transform:scale(.96)}
+.shape svg{width:48px;height:48px;fill:#fff}
+.tap{font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--muted);text-align:center}
+.locked .shape{opacity:.3;pointer-events:none}
+.locked .shape.mine{opacity:1;outline:4px solid var(--text);outline-offset:-4px}
+.locked .opt{opacity:.45}.locked .opt.mine{opacity:1;border-color:var(--text)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;display:grid;gap:14px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.stat{display:grid;gap:2px}
+.stat span{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.stat b{font-family:var(--display);font-size:2.3rem;font-variant-numeric:tabular-nums;line-height:1}
+.code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:1.05rem;letter-spacing:.08em;font-weight:700}
+.status{font-weight:700}
+.status.ok{color:var(--ok)}.status.bad{color:var(--bad)}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+th,td{padding:10px 6px;border-bottom:1px solid var(--line);text-align:left}
+th{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+td.r,th.r{text-align:right}
+tr.top td{font-weight:700}
+.tbl{overflow-x:auto}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main class="wrap" id="app"></main>
+<script>
+/* ===== SETTINGS ===== Paste your Google Apps Script web-app URL between the quotes.
+   Leave it empty and players get a result card to screenshot instead. */
+const SUBMIT_URL = "";
+const SECONDS_PER_QUESTION = 20;
+/* ==================== */
+
+const QUESTIONS = [{"q": "In Ephesians 5:4, which three kinds of immodest talk does Paul name?", "a": ["Gossip, lying and boasting", "Filthiness, foolish talking and jesting", "Anger, cursing and complaining", "Slander, flattery and murmuring"], "c": 1, "t": 20, "why": "Paul names filthiness (vulgar, shameful talk), foolish talking (empty chatter) and jesting (humour that is crude or at someone's expense)."}, {"q": "According to Ephesians 5:4, what should take the place of immodest talk?", "a": ["Silence", "Singing hymns", "Giving of thanks", "Quoting scripture"], "c": 2, "t": 20, "why": "\"...but rather giving of thanks.\" The cure for a dirty mouth is a thankful heart."}, {"q": "\"Out of the abundance of the heart the mouth speaketh\" is found in which verse?", "a": ["Matthew 12:34", "James 1:26", "Proverbs 13:3", "Psalm 34:13"], "c": 0, "t": 20, "why": "Matthew 12:34. Words are the fruit; the heart is the root. How you talk reports what you have been filling yourself with."}, {"q": "What did the \"Even you?!\" lecture-hall story teach about immodest talk?", "a": ["It only means swearing", "It is fine if it's a joke", "It only matters in church", "It doesn't need dirty words"], "c": 3, "t": 20, "why": "No dirty word was used, yet mocking the lecturer's accent was immodest. Speech can lack decency and respect without vulgarity."}, {"q": "Prov 26:18-19: one who deceives a neighbour, then says \"I was only joking!\", is like...", "a": ["A dog returning to its vomit", "A maniac shooting flaming arrows", "A city with broken walls", "A gold ring in a pig's snout"], "c": 1, "t": 20, "why": "Proverbs 26:18-19 compares him to a maniac shooting flaming arrows. \"Just joking\" does not undo the damage."}, {"q": "James 1:26: if you don't keep a tight rein on your tongue, your religion is...", "a": ["Incomplete", "Worthless", "Weak but acceptable", "Still growing"], "c": 1, "t": 20, "why": "\"...they deceive themselves, and their religion is worthless.\" Like a bridle on a horse, the tongue steers the whole life."}, {"q": "Matthew 12:36: on the day of judgment we will give account for every...", "a": ["Missed service", "Unanswered prayer", "Empty word spoken", "Unkind thought"], "c": 2, "t": 20, "why": "Every empty (idle, careless) word. Verse 37: by your words you will be acquitted, and by your words condemned."}, {"q": "In the Twilight Zone story, why could Tennyson stay silent for the whole year?", "a": ["He had his vocal cords cut", "He took a vow of silence", "He lost his voice to illness", "Taylor had him gagged"], "c": 0, "t": 20, "why": "He had his vocal cords severed before the bet. Both men lost. Proverbs 13:3: those who speak rashly come to ruin."}, {"q": "A quick test before you speak: Is it true? Is it kind? Is it...?", "a": ["Funny", "Popular", "Clever", "Necessary"], "c": 3, "t": 20, "why": "True, kind, necessary. Be \"quick to listen, slow to speak\" (James 1:19; Prov 15:28)."}, {"q": "\"Set a guard over my mouth, LORD; keep watch over the door of my lips\" is from...", "a": ["Psalm 19:14", "Psalm 141:3", "Proverbs 18:21", "Colossians 3:16"], "c": 1, "t": 20, "why": "Psalm 141:3, a prayer for self-control over our speech."}, {"q": "Proverbs 16:28 says \"a gossip separates...\"", "a": ["Whole families", "Close friends", "Churches", "Nations"], "c": 1, "t": 20, "why": "\"A gossip separates close friends.\" Passing on hurtful information, true or not, destroys trust."}, {"q": "Stretching the truth to impress, excuse ourselves or win an argument is called...", "a": ["Lying and exaggeration", "Foolish talking", "Gossip", "Jesting"], "c": 0, "t": 20, "why": "Lying and exaggeration (Eph 4:25). Matt 5:37: let your 'Yes' be 'Yes' and your 'No', 'No'."}, {"q": "James 3:9 warns that with the tongue we curse people made in...", "a": ["The dust of the earth", "Their parents' image", "God's likeness", "A broken world"], "c": 2, "t": 20, "why": "We \"curse human beings, who have been made in God's likeness.\" Mocking someone attacks the dignity God gave them."}, {"q": "James 3:5-6 pictures the tongue as...", "a": ["A sharp two-edged sword", "A dry, empty well", "A broken reed", "A small spark that sets a forest ablaze"], "c": 3, "t": 20, "why": "A small spark can start a great forest fire. Careless words do damage far beyond their size."}, {"q": "Galatians 5:22-23 lists which fruit of the Spirit that a loose tongue shows is missing?", "a": ["Self-control", "Joy", "Faithfulness", "Goodness"], "c": 0, "t": 20, "why": "Self-control is part of the Spirit's fruit, so a loose tongue is a warning sign of poor spiritual discipline."}, {"q": "1 Corinthians 15:33: \"Bad company corrupts...\"", "a": ["Young minds", "Good character", "Holy places", "Wise men"], "c": 1, "t": 20, "why": "\"Bad company corrupts good character.\" Choose friends and conversations carefully (Prov 13:20)."}, {"q": "Ephesians 4:29 says everything we say should...", "a": ["Be short and serious", "Always quote scripture", "Encourage those who hear it", "Be spoken quietly"], "c": 2, "t": 20, "why": "\"Let everything you say be good and helpful, so that your words will be an encouragement to those who hear them.\""}, {"q": "James 1:19: be quick to listen, slow to speak and slow to...", "a": ["Judge", "Forgive", "Answer", "Become angry"], "c": 3, "t": 20, "why": "\"...slow to become angry.\" Angry words cannot be unsaid (Prov 15:1; Eph 4:31)."}, {"q": "When you say something wrong, what does the lesson say you should do?", "a": ["Say \"that's just me\"", "Apologise and confess to God", "Laugh it off", "Stay quiet and move on"], "c": 1, "t": 20, "why": "Correct yourself immediately: apologise and confess to God (1 John 1:9). Don't defend it."}, {"q": "After Peter cursed in the courtyard, what did Jesus do in John 21?", "a": ["Restored him", "Replaced him", "Never spoke to him again", "Sent him away"], "c": 0, "t": 20, "why": "Jesus restored Peter. The answer to guilt is not hiding but confession, repentance and a fresh start in Christ."}];
+const KEY = "gyl-quiz-v1";
+const SHAPES=['<svg viewBox="0 0 40 40"><path d="M20 4 37 35H3z"/></svg>','<svg viewBox="0 0 40 40"><path d="M20 2 38 20 20 38 2 20z"/></svg>','<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="17"/></svg>','<svg viewBox="0 0 40 40"><rect x="4" y="4" width="32" height="32" rx="2"/></svg>'];
+const app=document.getElementById("app");
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmt=ms=>{const s=ms/1000,m=Math.floor(s/60);return m+":"+(s-m*60).toFixed(1).padStart(4,"0");};
+const load=()=>{try{return JSON.parse(localStorage.getItem(KEY))}catch(e){return null}};
+const save=st=>{try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}};
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const rid=()=>Array.from(crypto.getRandomValues(new Uint8Array(6)),b=>"ABCDEFGHJKLMNPQRSTUVWXYZ23456789"[b%32]).join("");
+function fingerprint(){const s=[navigator.userAgent,screen.width+"x"+screen.height,devicePixelRatio,Intl.DateTimeFormat().resolvedOptions().timeZone,navigator.language].join("|");let h=2166136261;for(const c of s){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return (h>>>0).toString(36).toUpperCase();}
+const head=r=>`<header><div class="brand">Guard Your Lips<small>Immodest Talks · quiz</small></div>${r||""}</header>`;
+
+let st=load(); let tick=null;
+
+function route(){
+  clearInterval(tick);
+  if(location.hash==="#leaderboard") return board();
+  if(!st) return intro();
+  if(st.done) return result();
+  return question();
+}
+window.addEventListener("hashchange",route);
+
+function intro(){
+  app.innerHTML=head()+`
+  <h1>How do <em>you</em> speak?</h1>
+  <p class="muted">A quiz on the Immodest Talks lesson. Everyone plays on their own phone.</p>
+  <ul class="rules">
+    <li><b>${QUESTIONS.length}</b><span>questions, in a different order for each player</span></li>
+    <li><b>${SECONDS_PER_QUESTION}s</b><span>per question. No answer counts as wrong.</span></li>
+    <li><b>1×</b><span>one attempt per phone. Leaving or refreshing won't restart it.</span></li>
+    <li><b>⏱</b><span>Your total time is recorded. Ties go to the faster player.</span></li>
+  </ul>
+  <div style="display:grid;gap:8px"><label for="nm">Your full name</label>
+  <input id="nm" maxlength="60" autocomplete="name" placeholder="e.g. Ada Okafor"></div>
+  <button class="go" id="start" disabled>Start quiz</button>`;
+  const nm=document.getElementById("nm"),b=document.getElementById("start");
+  nm.oninput=()=>b.disabled=nm.value.trim().length<2;
+  b.onclick=()=>{
+    st={name:nm.value.trim().slice(0,60),id:rid(),order:shuffle(QUESTIONS.map((_,i)=>i)).map(i=>({q:i,opts:shuffle([0,1,2,3])})),i:0,answers:[],times:[],qStart:Date.now(),done:false};
+    save(st);route();
+  };
+}
+
+function question(){
+  const item=st.order[st.i],q=QUESTIONS[item.q];
+  if(!st.qStart){st.qStart=Date.now();save(st);}
+  app.innerHTML=head(`<span class="pill">${st.i+1} / ${QUESTIONS.length}</span>`)+`
+  <div class="bar"><i id="bar"></i></div>
+  <div class="meta"><span id="left"></span><span>Total ${fmt(st.times.reduce((a,b)=>a+b,0))}</span></div>
+  <h2>${esc(q.q)}</h2>
+  <div id="ans" style="display:flex;flex-direction:column;gap:16px;flex:1">
+  <div class="answers">${item.opts.map((o,k)=>`<div class="opt" data-k="${k}"><span class="sw">${SHAPES[k]}</span><span>${esc(q.a[o])}</span></div>`).join("")}</div>
+  <p class="tap">Tap the shape of your answer</p>
+  <div class="pad">${item.opts.map((o,k)=>`<button class="shape" data-o="${o}" data-k="${k}" aria-label="${["Triangle","Diamond","Circle","Square"][k]}: ${esc(q.a[o])}">${SHAPES[k]}</button>`).join("")}</div>
+  </div>`;
+  const limit=SECONDS_PER_QUESTION*1000,bar=document.getElementById("bar"),left=document.getElementById("left"),box=document.getElementById("ans");
+  let locked=false;
+  const commit=(o)=>{if(locked)return;locked=true;clearInterval(tick);
+    const used=Math.min(Date.now()-st.qStart,limit);
+    st.answers.push(o);st.times.push(used);st.i++;st.qStart=0;
+    if(st.i>=QUESTIONS.length){finish();}
+    save(st);
+    box.classList.add("locked");
+    setTimeout(route,o===null?600:450);
+  };
+  box.querySelectorAll(".shape").forEach(b=>b.onclick=()=>{b.classList.add("mine");box.querySelector(`.opt[data-k="${b.dataset.k}"]`).classList.add("mine");commit(+b.dataset.o)});
+  const upd=()=>{const el=Date.now()-st.qStart,rem=Math.max(0,limit-el);bar.style.transform=`scaleX(${rem/limit})`;left.textContent=Math.ceil(rem/1000)+"s left";if(rem<=0){left.textContent="Time's up";commit(null);}};
+  upd();tick=setInterval(upd,100);
+}
+
+function finish(){
+  let score=0;st.order.forEach((it,k)=>{if(st.answers[k]===QUESTIONS[it.q].c)score++;});
+  st.score=score;st.ms=st.times.reduce((a,b)=>a+b,0);st.done=true;st.finishedAt=new Date().toISOString();st.sent=false;
+}
+
+function result(){
+  app.innerHTML=head(`<span class="pill">Finished</span>`)+`
+  <h1>Well done, <em>${esc(st.name.split(" ")[0])}</em></h1>
+  <div class="card">
+    <div class="stats"><div class="stat"><span>Score</span><b>${st.score}/${QUESTIONS.length}</b></div>
+    <div class="stat"><span>Time</span><b>${fmt(st.ms)}</b></div></div>
+    <div class="stat"><span>Name</span><div style="font-weight:700">${esc(st.name)}</div></div>
+    <div class="stat"><span>Result code</span><div class="code">${st.id}-${st.score}-${Math.round(st.ms/100)}</div></div>
+    <p class="status" id="status"></p>
+  </div>
+  <p class="muted">Answers are not shown here so nobody can pass them on. Your leader will go through them with everyone.</p>`;
+  const s=document.getElementById("status");
+  if(!SUBMIT_URL){s.textContent="Take a screenshot of this card and send it to your leader.";return;}
+  if(st.sent){s.className="status ok";s.textContent="✓ Your result has been sent.";return;}
+  s.textContent="Sending your result…";
+  fetch(SUBMIT_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},
+    body:JSON.stringify({name:st.name,score:st.score,total:QUESTIONS.length,seconds:+(st.ms/1000).toFixed(1),deviceId:st.id,fp:fingerprint(),answers:st.order.map((it,k)=>({q:it.q+1,ok:st.answers[k]===QUESTIONS[it.q].c}))})})
+   .then(()=>{st.sent=true;save(st);s.className="status ok";s.textContent="✓ Your result has been sent.";})
+   .catch(()=>{s.className="status bad";s.innerHTML="Couldn't send. Check your internet, then <button class='go' style='width:auto;padding:8px 14px' id='retry'>Try again</button><br>or screenshot this card for your leader.";document.getElementById("retry").onclick=result;});
+}
+
+function board(){
+  app.innerHTML=head(`<span class="pill">Leaderboard</span>`)+`<h2>Results</h2>
+  <p class="muted" id="lbm">${SUBMIT_URL?"Loading…":"Results collection isn't set up yet. Add the web-app URL to this file."}</p>
+  <div class="tbl"><table hidden id="t"><thead><tr><th>#</th><th>Name</th><th class="r">Score</th><th class="r">Time</th></tr></thead><tbody></tbody></table></div>
+  ${SUBMIT_URL?'<button class="go" id="rf">Refresh</button>':""}`;
+  if(!SUBMIT_URL)return;
+  const go=()=>fetch(SUBMIT_URL).then(r=>r.json()).then(d=>{
+    const rows=d.rows||[];document.getElementById("lbm").textContent=rows.length+" player"+(rows.length===1?"":"s")+" finished. Ranked by score, then fastest time.";
+    const t=document.getElementById("t");t.hidden=!rows.length;
+    t.tBodies[0].innerHTML=rows.map((r,i)=>`<tr class="${i<3?"top":""}"><td>${i+1}</td><td>${esc(r.name)}</td><td class="r">${r.score}/${r.total}</td><td class="r">${fmt(r.seconds*1000)}</td></tr>`).join("");
+  }).catch(()=>document.getElementById("lbm").textContent="Couldn't load results. Check the web-app URL and that it's deployed for \"Anyone\".");
+  go();document.getElementById("rf").onclick=go;
+}
+route();
+</script>
+</body>
+</html>
