@@ -171,9 +171,9 @@ function result(){
     <div class="stat"><span>Result code</span><div class="code">${st.id}-${st.score}-${Math.round(st.ms/100)}</div></div>
     <p class="status" id="status"></p>
   </div>
-  <p class="muted">Answers are not shown here so nobody can pass them on. Your leader will go through them with everyone.</p>`;
+  <p class="muted">Answers are not shown here so nobody can pass them on.</p>`;
   const s=document.getElementById("status");
-  if(!SUBMIT_URL){s.textContent="Take a screenshot of this card and send it to your leader.";return;}
+  if(!SUBMIT_URL){s.textContent="Take a screenshot of this card and send it to your WhatsApp group.";return;}
   if(st.sent){s.className="status ok";s.textContent="✓ Your result has been sent.";return;}
   s.textContent="Sending your result…";
   fetch(SUBMIT_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},
